@@ -32,13 +32,7 @@ public class UserController : ControllerBase
 
     //User/Details/5
     [HttpGet]
-    public async Task<ActionResult<User>> Details(Guid? id) => await _userRepo.Details(id);
-
-    //// GET: Users/Create
-    //public IActionResult Create()
-    //{
-    //    return View();
-    //}
+    public async Task<ActionResult<User>> Details(Guid? id) => await _userRepo.Details(id);    
 
     //// POST: Users/Create
     //// To protect from overposting attacks, enable the specific properties you want to bind to.
