@@ -14,12 +14,12 @@ namespace Net6API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UserController : ControllerBase
     {       
         private readonly IUserRepository _userRepo;
-        private readonly ILogger<UsersController> _logger;
+        private readonly ILogger<UserController> _logger;
 
-        public UsersController(IUserRepository userRepo, ILogger<UsersController> logger)
+        public UserController(IUserRepository userRepo, ILogger<UserController> logger)
         {           
             _userRepo = userRepo;
             _logger = logger;
