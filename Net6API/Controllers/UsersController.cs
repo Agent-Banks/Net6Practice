@@ -1,64 +1,42 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#nullable disable
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Net6API.Data;
 using Net6API.Models;
+using Net6API.Repository;
 
-namespace Net6API.Repository
+namespace Net6API.Controllers
 {
-    public interface IUserRepository
-    {
-        Task<ActionResult<List<User>>> AllUsers();
-        Task<ActionResult<User>> Details(Guid? id);
-    }
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class UsersController : ControllerBase
+    {       
+        private readonly IUserRepository _userRepo;
+        private readonly ILogger<UsersController> _logger;
 
-    public class UserRepository : ControllerBase, IUserRepository
-    {
-        private readonly Net6APIContext _context;
-        private readonly IConfiguration _config;
-        private readonly ILogger<UserRepository> _logger;
-
-        public UserRepository(Net6APIContext context, IConfiguration config, ILogger<UserRepository> logger)
-        {
-            _context = context;
-            _config = config;
+        public UsersController(IUserRepository userRepo, ILogger<UsersController> logger)
+        {           
+            _userRepo = userRepo;
             _logger = logger;
         }
 
-        async Task<ActionResult<List<User>>> IUserRepository.AllUsers()
+        // GET: AllUser
+        [HttpGet]
+        public async Task<ActionResult<List<User>>> AllUsers()
         {
-            try
-            {
-               List<User> users = await _context.User.ToListAsync();
-
-                if(users == null)
-                {
-                    return NotFound();
-                }
-
-                return users;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message.ToString());
-                return StatusCode(500, ex.Message);
-            }
+            return await _userRepo.AllUsers();
         }
+
         // GET: Users/Details/5
+        [HttpGet]
         public async Task<ActionResult<User>> Details(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.User
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return user;
+            return await _userRepo.Details(id);            
         }
 
         //// GET: Users/Create
