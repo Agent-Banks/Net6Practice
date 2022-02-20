@@ -19,5 +19,4 @@ public class User
         CreatedOnDate = DateTime.Now;
         CreatedBy = "System";
     }
-
 }
