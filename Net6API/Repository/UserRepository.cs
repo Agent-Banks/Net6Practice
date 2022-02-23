@@ -9,6 +9,7 @@ public interface IUserRepository
 {
     Task<ActionResult<List<User>>> AllUsers();
     Task<ActionResult<User>> Details(Guid? id);
+    Task<ActionResult<User>> Create([Bind("UserName,Password,Email,CreatedBy,")] User user);
 }
 
 public class UserRepository : ControllerBase, IUserRepository
@@ -30,10 +31,7 @@ public class UserRepository : ControllerBase, IUserRepository
         {
             List<User> users = await _context.User.ToListAsync();
 
-            if (users == null)
-            {
-                return NotFound();
-            }
+            if (users == null) return NotFound();            
 
             return users;
         }
@@ -44,62 +42,36 @@ public class UserRepository : ControllerBase, IUserRepository
         }
     }
 
-    // GET: Users/Details/5
+    // GET: User/Details/5
     async Task<ActionResult<User>> IUserRepository.Details(Guid? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
+        if (id == null) return NotFound();
+        
         var user = await _context.User
             .FirstOrDefaultAsync(m => m.ID == id);
-        if (user == null)
-        {
-            return NotFound();
-        }
+
+        if (user == null) return NotFound();       
 
         return user;
     }
 
-    //// GET: Users/Create
-    //public IActionResult Create()
-    //{
-    //    return View();
-    //}
+    // POST: User/Create
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.    
+    async Task<ActionResult<User>> IUserRepository.Create([Bind("UserName,Password,Email")] User user)
+    {
+        if (ModelState.IsValid)
+        {
+            user.ID = Guid.NewGuid();
+            user.LastUpdatedOnDate = DateTime.Now;
+            user.LastUpdatedBy = "System";
 
-    //// POST: Users/Create
-    //// To protect from overposting attacks, enable the specific properties you want to bind to.
-    //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public async Task<IActionResult> Create([Bind("Password,Email,ID,CreatedBy,CreatedOnDate,LastUpdatedBy,LastUpdatedOnDate")] User user)
-    //{
-    //    if (ModelState.IsValid)
-    //    {
-    //        user.ID = Guid.NewGuid();
-    //        _context.Add(user);
-    //        await _context.SaveChangesAsync();
-    //        return RedirectToAction(nameof(Index));
-    //    }
-    //    return View(user);
-    //}
-
-    //// GET: Users/Edit/5
-    //public async Task<IActionResult> Edit(Guid? id)
-    //{
-    //    if (id == null)
-    //    {
-    //        return NotFound();
-    //    }
-
-    //    var user = await _context.User.FindAsync(id);
-    //    if (user == null)
-    //    {
-    //        return NotFound();
-    //    }
-    //    return View(user);
-    //}
+            _context.Add(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        return user;
+    }  
 
     //// POST: Users/Edit/5
     //// To protect from overposting attacks, enable the specific properties you want to bind to.

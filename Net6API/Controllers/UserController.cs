@@ -32,24 +32,12 @@ public class UserController : ControllerBase
 
     //User/Details/5
     [HttpGet]
-    public async Task<ActionResult<User>> Details(Guid? id) => await _userRepo.Details(id);    
+    public async Task<ActionResult<User>> Details(Guid? id) => await _userRepo.Details(id);
 
-    //// POST: Users/Create
-    //// To protect from overposting attacks, enable the specific properties you want to bind to.
-    //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    //[HttpPost]
+    // POST: Users/Create   
+    [HttpPost]
     //[ValidateAntiForgeryToken]
-    //public async Task<IActionResult> Create([Bind("Password,Email,ID,CreatedBy,CreatedOnDate,LastUpdatedBy,LastUpdatedOnDate")] User user)
-    //{
-    //    if (ModelState.IsValid)
-    //    {
-    //        user.ID = Guid.NewGuid();
-    //        _context.Add(user);
-    //        await _context.SaveChangesAsync();
-    //        return RedirectToAction(nameof(Index));
-    //    }
-    //    return View(user);
-    //}
+    public async Task<ActionResult<User>> Create([Bind("UserName,Password,Email")] User user) => await _userRepo.Create(user);    
 
     //// GET: Users/Edit/5
     //public async Task<IActionResult> Edit(Guid? id)
