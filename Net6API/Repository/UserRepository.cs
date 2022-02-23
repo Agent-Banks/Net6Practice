@@ -32,7 +32,7 @@ public class UserRepository : ControllerBase, IUserRepository
         {
             List<User> users = await _context.User.ToListAsync();
 
-            if (users == null) return NotFound();            
+            if (users == null) return NotFound(new NullUser());            
 
             return users;
         }
@@ -46,12 +46,12 @@ public class UserRepository : ControllerBase, IUserRepository
     // GET: User/Details/5
     async Task<ActionResult<User>> IUserRepository.Details(Guid? id)
     {
-        if (id == null) return NotFound();
+        if (id == null) return NotFound(new NullUser());
         
         var user = await _context.User
             .FirstOrDefaultAsync(m => m.ID == id);
 
-        if (user == null) return NotFound();       
+        if (user == null) return NotFound(new NullUser());       
 
         return user;
     }

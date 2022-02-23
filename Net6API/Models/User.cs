@@ -2,7 +2,7 @@
 
 namespace Net6API.Models;
 
-public class User
+public class User : IUser
 {
     public Guid ID { get; set; }
     [Required] public string UserName { get; set; }
