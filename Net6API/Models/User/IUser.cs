@@ -1,5 +1,4 @@
-﻿
-namespace Net6API.Models;
+﻿namespace Net6API.Models;
 
 public interface IUser
 {
