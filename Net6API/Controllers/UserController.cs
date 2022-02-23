@@ -34,10 +34,10 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<User>> Details(Guid? id) => await _userRepo.Details(id);
 
-    // POST: Users/Create   
+    //Users/Create   
     [HttpPost]
     //[ValidateAntiForgeryToken]
-    public async Task<ActionResult<User>> Create([Bind("UserName,Password,Email")] User user) => await _userRepo.Create(user);    
+    public async Task<ActionResult<User>> Create([Bind("UserName,Password,Email")] User user) => await _userRepo.Create(user);
 
     //// GET: Users/Edit/5
     //public async Task<IActionResult> Edit(Guid? id)
@@ -117,10 +117,5 @@ public class UserController : ControllerBase
     //    _context.User.Remove(user);
     //    await _context.SaveChangesAsync();
     //    return RedirectToAction(nameof(Index));
-    //}
-
-    //private bool UserExists(Guid id)
-    //{
-    //    return _context.User.Any(e => e.ID == id);
-    //}
+    //}   
 }

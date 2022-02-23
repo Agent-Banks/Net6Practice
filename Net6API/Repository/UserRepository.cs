@@ -9,7 +9,8 @@ public interface IUserRepository
 {
     Task<ActionResult<List<User>>> AllUsers();
     Task<ActionResult<User>> Details(Guid? id);
-    Task<ActionResult<User>> Create([Bind("UserName,Password,Email,CreatedBy,")] User user);
+    Task<ActionResult<User>> Create([Bind("UserName,Password,Email")] User user);
+    Task<ActionResult<User>> Edit(Guid id, [Bind("UserName,Password,Email")] User user);
 }
 
 public class UserRepository : ControllerBase, IUserRepository
@@ -71,42 +72,39 @@ public class UserRepository : ControllerBase, IUserRepository
             return RedirectToAction(nameof(Index));
         }
         return user;
-    }  
+    }
 
-    //// POST: Users/Edit/5
-    //// To protect from overposting attacks, enable the specific properties you want to bind to.
-    //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public async Task<IActionResult> Edit(Guid id, [Bind("Password,Email,ID,CreatedBy,CreatedOnDate,LastUpdatedBy,LastUpdatedOnDate")] User user)
-    //{
-    //    if (id != user.ID)
-    //    {
-    //        return NotFound();
-    //    }
+    // POST: Users/Edit/5
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    async Task<ActionResult<User>> IUserRepository.Edit(Guid id, [Bind("Password,Email,ID,CreatedBy,CreatedOnDate,LastUpdatedBy,LastUpdatedOnDate")] User user)
+    {
+        if (id != user.ID) return NotFound();        
 
-    //    if (ModelState.IsValid)
-    //    {
-    //        try
-    //        {
-    //            _context.Update(user);
-    //            await _context.SaveChangesAsync();
-    //        }
-    //        catch (DbUpdateConcurrencyException)
-    //        {
-    //            if (!UserExists(user.ID))
-    //            {
-    //                return NotFound();
-    //            }
-    //            else
-    //            {
-    //                throw;
-    //            }
-    //        }
-    //        return RedirectToAction(nameof(Index));
-    //    }
-    //    return View(user);
-    //}
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                _context.Update(user);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(user.ID))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        return user;
+    }
 
     //// GET: Users/Delete/5
     //public async Task<IActionResult> Delete(Guid? id)
@@ -137,8 +135,8 @@ public class UserRepository : ControllerBase, IUserRepository
     //    return RedirectToAction(nameof(Index));
     //}
 
-    //private bool UserExists(Guid id)
-    //{
-    //    return _context.User.Any(e => e.ID == id);
-    //}
+    private bool UserExists(Guid id)
+    {
+        return _context.User.Any(e => e.ID == id);
+    }
 }
